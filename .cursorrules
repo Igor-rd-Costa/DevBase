@@ -1,0 +1,15 @@
+In Typescript:
+Use type instead of interface
+Use ',' to separate type properties, never ';'. Last property recieves no ','. Ex:
+type Example {
+  first: 1,
+  second: 2,
+  third: 3
+}
+Never use one line if statements, always encapsulate conditional logic with {}
+Always use absolute paths for imports. Ex: import Item from "@/path/to/item";
+tsx files MUST always declare "use client"
+
+When working in the Code system in frontend:
+All state management should be done inside CodeContext. Preferably inside "sub contexes" to avoid bloating the main CodeContext file.
+Use existing sub contexes such as CodeTabs and CodeActions as an example. 
