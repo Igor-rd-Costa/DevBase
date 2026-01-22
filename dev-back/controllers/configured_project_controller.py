@@ -130,3 +130,35 @@ async def get_configured_projects(
         for project in projects
     ]
 
+@router.delete("/{project_id}")
+async def delete_configured_project(
+    project_id: UUID,
+    current_user: Optional[User] = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    user_result = await db.execute(
+        select(UserModel).where(UserModel.github_id == current_user.id)
+    )
+    user = user_result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    result = await db.execute(
+        select(ConfiguredProjectModel).where(
+            (ConfiguredProjectModel.id == project_id) & 
+            (ConfiguredProjectModel.user_id == user.id)
+        )
+    )
+    project = result.scalar_one_or_none()
+    
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    await db.delete(project)
+    await db.commit()
+    
+    return {"status": "success"}
