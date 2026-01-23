@@ -1,0 +1,17 @@
+server:
+  port: ${GATEWAY_HTTP_PORT:8080}
+
+spring:
+  application:
+    name: dev-gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 10000
+        response-timeout: 30s
+
+gateway:
+  websocket:
+    port: ${GATEWAY_WS_PORT:8081}
+  backend:
+    url: ${BACKEND_URL:http://localhost:8000}
