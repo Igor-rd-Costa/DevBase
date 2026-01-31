@@ -21,6 +21,7 @@ export default function CodeConfigureProjectDialog({ onOpenChange }: CodeConfigu
     if (token) {
       getGitHubRepos(token)
         .then((data) => {
+          console.log(data);
           setRepos(data);
           setLoading(false);
         })
@@ -43,6 +44,8 @@ export default function CodeConfigureProjectDialog({ onOpenChange }: CodeConfigu
   const handleCreate = () => {
     onOpenChange(null);
   };
+
+  console.log("The Options", repos);
 
 
   return (

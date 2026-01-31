@@ -9,7 +9,7 @@ export enum DialogType {
   CUSTOM
 }
 
-export type DialogBaseProps = { onOpenChange: (value: any) => void };
+export type DialogBaseProps = { onOpenChange: (value: any) => void, className?: string };
 
 export type DialogRenderType = "dialog" | "popup";
 
@@ -52,18 +52,19 @@ type DialogWrapperProps = React.PropsWithChildren & {
   type: DialogType,
   title: string,
   onOpenChange: (val: any) => void,
+  className?: string,
 }
 
 type PopupWrapperProps = React.PropsWithChildren & {
   target: HTMLElement | null,
   onOpenChange: (val: any) => void,
+  className?: string,
 }
 
-function PopupWrapper({ target, onOpenChange, children }: PopupWrapperProps) {
+function PopupWrapper({ target, onOpenChange, children, className = "" }: PopupWrapperProps) {
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
   const popupRef = useRef<HTMLDivElement>(null);
 
-  // Use useLayoutEffect to prevent flickering by calculating position before paint
   React.useLayoutEffect(() => {
     if (!target || !popupRef.current) {
       onOpenChange(null);
@@ -136,7 +137,7 @@ function PopupWrapper({ target, onOpenChange, children }: PopupWrapperProps) {
   return (
     <div
       ref={popupRef}
-      className="fixed z-[102] bg-white dark:bg-zinc-900 rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-zinc-100 dark:border-zinc-800/50 overflow-hidden flex flex-col backdrop-blur-xl"
+      className={`fixed z-[102] bg-white dark:bg-zinc-900 rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-zinc-100 dark:border-zinc-800/50 overflow-hidden flex flex-col backdrop-blur-xl ${className}`}
       style={{
         top: `${position.top}px`,
         left: `${position.left}px`,
@@ -149,29 +150,28 @@ function PopupWrapper({ target, onOpenChange, children }: PopupWrapperProps) {
   );
 }
 
-function DialogWrapper({ type, title, onOpenChange, children }: DialogWrapperProps) {
+function DialogWrapper({ type, title, onOpenChange, children, className = "" }: DialogWrapperProps) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      <div
-        className="fixed inset-0 bg-black/80"
-        onClick={() => onOpenChange(false)}
-      />
-      <div className="relative z-[101] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl max-w-lg w-full mx-4 border border-zinc-200 dark:border-zinc-800 ring-1 ring-zinc-900/5">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
-            {title}
-          </h2>
-          <div className="text-zinc-700 dark:text-zinc-300">
-            {children}
-          </div>
+    <div 
+      className="absolute top-0 left-0 w-full h-full inset-0 z-[100] flex items-center justify-center bg-black/60 overflow-hidden"
+      onClick={() => onOpenChange(false)}
+    >
+      <div 
+        className={`relative z-[101] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 ring-1 ring-zinc-900/5
+        grid grid-rows-[auto_1fr_auto] h-fit max-h-[95dvh] w-fit overflow-hidden ${className}`}>
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 p-4 py-2">
+          {title}
+        </h2>
+        <div className="text-zinc-700 dark:text-zinc-300 w-fit h-fit max-h-full max-w-full overflow-hidden p-4">
+          {children}
         </div>
-        {type !== DialogType.NO_BUTTONS && (
-          <div className="flex justify-end gap-2 p-6 pt-0 border-t border-zinc-200 dark:border-zinc-700">
+        {type !== DialogType.NO_BUTTONS ? (
+          <div className="flex justify-end gap-2 p-4 py-2 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
             {type === DialogType.OK ? (
               <button
                 type="button"
                 onClick={() => onOpenChange(true)}
-                className="px-4 py-2 rounded-lg bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-medium transition-colors shadow-sm"
+                className="px-4 py-1 rounded-lg bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-medium transition-colors shadow-sm text-sm"
               >
                 Ok
               </button>
@@ -194,7 +194,7 @@ function DialogWrapper({ type, title, onOpenChange, children }: DialogWrapperPro
               </>
             )}
           </div>
-        )}
+        ) : <div></div>}
       </div>
     </div>
   );
@@ -215,10 +215,6 @@ export function DialogProvider({ children }: DialogProviderProps) {
     }
     setOpenDialogs((prev) => prev.filter((dialog) => dialog.id !== id));
   };
-
-  useEffect(() => {
-    console.log(openDialogs);
-  }, [openDialogs])
 
   const show = <T = any>(
     type: DialogType,
@@ -283,17 +279,18 @@ export function DialogProvider({ children }: DialogProviderProps) {
             const handleOpenChange = (value: any) => {
               onOpenChange(value, dialog.id);
             };
+            const { className, props } = dialog.props as any;
 
             if (dialog.renderType === "popup") {
               if (dialog.type !== DialogType.CUSTOM) {
                 return (
-                  <PopupWrapper key={dialog.id} target={dialog.target} onOpenChange={handleOpenChange}>
+                  <PopupWrapper key={dialog.id} className={className} target={dialog.target} onOpenChange={handleOpenChange}>
                     <div className="p-4">
                       <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
                         {dialog.title}
                       </h3>
                       <div className="text-zinc-700 dark:text-zinc-300">
-                        <dialog.component onOpenChange={handleOpenChange} {...dialog.props} />
+                        <dialog.component onOpenChange={handleOpenChange} {...props} />
                       </div>
                       {dialog.type !== DialogType.NO_BUTTONS && (
                         <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700">
@@ -329,21 +326,22 @@ export function DialogProvider({ children }: DialogProviderProps) {
                   </PopupWrapper>
                 );
               } else {
+                const componentKey = props?.options ? `${dialog.id}-${(props.options as any[]).length}` : dialog.id;
                 return (
-                  <PopupWrapper key={dialog.id} target={dialog.target} onOpenChange={handleOpenChange}>
-                    <dialog.component onOpenChange={handleOpenChange} {...dialog.props} />
+                  <PopupWrapper className={className} key={dialog.id} target={dialog.target} onOpenChange={handleOpenChange}>
+                    <dialog.component key={componentKey} onOpenChange={handleOpenChange} {...props} />
                   </PopupWrapper>
                 );
               }
             } else {
               if (dialog.type !== DialogType.CUSTOM) {
                 return (
-                  <DialogWrapper key={dialog.id} type={dialog.type} title={dialog.title} onOpenChange={handleOpenChange}>
-                    <dialog.component onOpenChange={handleOpenChange} {...dialog.props} />
+                  <DialogWrapper key={dialog.id} className={className} type={dialog.type} title={dialog.title} onOpenChange={handleOpenChange}>
+                    <dialog.component onOpenChange={handleOpenChange} {...props} />
                   </DialogWrapper>
                 );
               } else {
-                return <dialog.component key={dialog.id} onOpenChange={handleOpenChange} {...dialog.props} />;
+                return <dialog.component key={dialog.id} className={className} onOpenChange={handleOpenChange} {...props} />;
               }
             }
           })}

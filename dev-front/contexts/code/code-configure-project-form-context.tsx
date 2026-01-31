@@ -52,15 +52,9 @@ export function CodeConfigureProjectFormProvider({
   const [activeRepoId, setActiveRepoId] = useState<number | null>(initialActiveRepoId || null);
   const [configuredRepos, setConfiguredRepos] = useState<Record<number, Partial<ConfiguredRepo>>>({});
 
-  const selectedReposData = useMemo(() => 
-    repos.filter((repo) => selectedRepos.includes(repo.id)),
-    [repos, selectedRepos]
-  );
+  const selectedReposData = useMemo(() => repos.filter((repo) => selectedRepos.includes(repo.id)), [repos, selectedRepos]);
 
-  const isFormValid = useMemo(() => 
-    name.trim().length > 0 && selectedRepos.length > 0,
-    [name, selectedRepos]
-  );
+  const isFormValid = useMemo(() => name.trim().length > 0 && selectedRepos.length > 0, [name, selectedRepos]);
 
   useEffect(() => {
     if (selectedRepos.length > 0 && activeRepoId === null) {

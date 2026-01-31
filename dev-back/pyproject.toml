@@ -18,3 +18,8 @@ dependencies = [
     "psycopg2-binary>=2.9.11",
     "docker>=7.1.0",
 ]
+
+[tool.uv.workspace]
+members = [
+    "dev-manager",
+]

@@ -24,7 +24,9 @@ export type ConfiguredRepoCustomSetupConfig = {
   id: string,
   repoId: string,
   folderPath: string,
-  buildConfig: ConfiguredRepoBuildConfig
+  buildConfig: ConfiguredRepoBuildConfig,
+  expose?: boolean,
+  ports?: number[],
 }
 
 export type ConfiguredRepo = {

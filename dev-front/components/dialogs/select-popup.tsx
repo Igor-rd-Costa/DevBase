@@ -297,13 +297,25 @@ SelectPopupWithShow.show = <T = string>(
     let forceUpdate: (() => void) | null = null;
 
     const SelectDialogComponent = (props: DialogBaseProps & SelectPopupShowOptions<T>) => {
+      console.log("SelectDialogComponent RENDER - props:", props);
+      console.log("SelectDialogComponent RENDER - props.options:", props.options);
+      console.log("SelectDialogComponent RENDER - props.options length:", props.options?.length);
+      
       const [value, setValue] = useState<T | T[] | null>(selectedValue);
 
       useEffect(() => {
+        console.log("SelectDialogComponent useEffect - initial mount");
         forceUpdate = () => {
           setValue(selectedValue);
         };
       }, []);
+
+      useEffect(() => {
+        console.log("SelectDialogComponent useEffect - props changed");
+        console.log("SelectDialogComponent props:", props);
+        console.log("SelectDialogComponent props.options:", props.options);
+        console.log("SelectDialogComponent props.options length:", props.options?.length);
+      }, [props.options, props.loading, props.error]);
 
       const handleOptionClick = (optionValue: T) => {
         if (props.multiple) {
@@ -348,7 +360,8 @@ SelectPopupWithShow.show = <T = string>(
           </div>
           <div className="flex-1 overflow-y-auto">
             <SelectContent
-              options={props.options}
+              key={`options-${props.options?.length || 0}-${props.loading ? 'loading' : 'loaded'}`}
+              options={props.options || []}
               value={value}
               multiple={props.multiple}
               showCheckboxes={props.showCheckboxes}
@@ -393,4 +406,3 @@ SelectPopupWithShow.show = <T = string>(
 };
 
 export { SelectPopupWithShow as SelectPopupShow };
-

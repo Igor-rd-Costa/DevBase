@@ -3,8 +3,9 @@
 import { useCode } from "@/contexts/code/code-context";
 import { useDialog, DialogType } from "@/contexts/dialog-context";
 import CodeConfigureProjectDialog from "@/components/dialogs/code/configureProjectDialog/code-configure-project-dialog";
+import ProjectDetailsDialog from "@/components/dialogs/code/project-details-dialog";
 import { CodeConfiguredGitProjectInfo } from "@/types/code";
-import { Plus, ChevronDown, Folder, Trash2 } from "lucide-react";
+import { Plus, ChevronDown, Folder, Trash2, Settings } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function CodeConfiguredGitProjectSelect() {
@@ -42,6 +43,11 @@ export default function CodeConfiguredGitProjectSelect() {
         console.error("Failed to delete project:", error);
       }
     }
+  };
+
+  const handleViewDetails = async (e: React.MouseEvent, project: CodeConfiguredGitProjectInfo) => {
+    e.stopPropagation();
+    await ProjectDetailsDialog.show(dialog, project.id);
   };
 
   useEffect(() => {
@@ -116,13 +122,22 @@ export default function CodeConfiguredGitProjectSelect() {
                       {project.name}
                     </span>
                   </div>
-                  <button
-                    onClick={(e) => handleDelete(e, project)}
-                    className="p-1.5 rounded-md opacity-0 group-hover:opacity-100 text-zinc-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 transition-all cursor-pointer"
-                    aria-label={`Delete ${project.name}`}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={(e) => handleViewDetails(e, project)}
+                      className="p-1.5 rounded-md opacity-0 group-hover:opacity-100 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-all cursor-pointer"
+                      aria-label={`View details for ${project.name}`}
+                    >
+                      <Settings className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={(e) => handleDelete(e, project)}
+                      className="p-1.5 rounded-md opacity-0 group-hover:opacity-100 text-zinc-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 transition-all cursor-pointer"
+                      aria-label={`Delete ${project.name}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
