@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { getConfiguredProjects as fetchProjects, deleteConfiguredProject as deleteProjectApi } from "@/lib/api";
 
 export interface GitContextType {
+  isLoading: boolean;
   raw: {
     configuredProjects: CodeConfiguredGitProjectInfo[],
     setConfiguredProjects: React.Dispatch<React.SetStateAction<CodeConfiguredGitProjectInfo[]>>,
@@ -30,9 +31,10 @@ export interface GitContextType {
 }
 
 export function useGit() {
-  const { token } = useAuth();
+  const { token, loading: authLoading } = useAuth();
   const [configuredProjects, setConfiguredProjects] = useState<CodeConfiguredGitProjectInfo[]>([]);
   const [activeProjectId, setActiveProjectIdState] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setActiveProjectId = useCallback((id: string | null) => {
     setActiveProjectIdState(id);
@@ -41,13 +43,17 @@ export function useGit() {
   const getActiveProjectId = useCallback(() => activeProjectId, [activeProjectId]);
 
   useEffect(() => {
+    if (authLoading) return;
+
     if (token) {
+      setIsLoading(true);
       fetchProjects(token)
         .then((data) => {
           const mapped = data.map((project) => ({
             id: project.id,
             projectId: project.id.split("-")[0], // Short ID for display
             name: project.name,
+            updatedAt: project.updatedAt,
           }));
           setConfiguredProjects(mapped);
           if (mapped.length > 0 && !activeProjectId) {
@@ -56,9 +62,15 @@ export function useGit() {
         })
         .catch((error) => {
           console.error("Failed to load configured projects:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
+    } else {
+      setIsLoading(false);
+      setConfiguredProjects([]);
     }
-  }, [token]);
+  }, [token, authLoading]);
 
   const getConfiguredProjects = useCallback(() => configuredProjects, [configuredProjects]);
 
@@ -92,6 +104,7 @@ export function useGit() {
   }, [token, removeConfiguredProject, activeProjectId]);
 
   const gitContext: GitContextType = useMemo(() => ({
+    isLoading,
     raw: {
       configuredProjects,
       setConfiguredProjects,
@@ -105,7 +118,7 @@ export function useGit() {
     updateConfiguredProject,
     removeConfiguredProject,
     deleteConfiguredProject,
-  }), [configuredProjects, setConfiguredProjects, activeProjectId, setActiveProjectId, getConfiguredProjects, getActiveProjectId, addConfiguredProject, updateConfiguredProject, removeConfiguredProject, deleteConfiguredProject]);
+  }), [isLoading, configuredProjects, setConfiguredProjects, activeProjectId, setActiveProjectId, getConfiguredProjects, getActiveProjectId, addConfiguredProject, updateConfiguredProject, removeConfiguredProject, deleteConfiguredProject]);
 
   return gitContext;
 }

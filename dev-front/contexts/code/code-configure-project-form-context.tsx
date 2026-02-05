@@ -2,9 +2,8 @@
 
 import { createContext, useContext, ReactNode, useState, useEffect, useMemo, useCallback } from "react";
 import { GitHubRepo } from "@/lib/api";
-import { 
-  ConfiguredRepo, 
-  ConfiguredRepoType, 
+import {
+  ConfiguredRepo,
   ConfiguredRepoSetupMode,
   ConfiguredRepoBuildConfig,
   ConfiguredRepoCustomSetupConfig,
@@ -23,7 +22,6 @@ type CodeConfigureProjectFormContextType = {
   setActiveRepoId: (repoId: number | null) => void,
   isFormValid: boolean,
   getConfiguredRepo: (repoId: number) => ConfiguredRepo | null,
-  setConfiguredRepoType: (repoId: number, type: ConfiguredRepoType) => void,
   setConfiguredRepoSetupMode: (repoId: number, setupMode: ConfiguredRepoSetupMode) => void,
   setConfiguredRepoBuildConfig: (repoId: number, buildConfig: ConfiguredRepoBuildConfig | undefined) => void,
   setConfiguredRepoCustomSetupConfigs: (repoId: number, configs: ConfiguredRepoCustomSetupConfig[]) => void,
@@ -36,12 +34,12 @@ type CodeConfigureProjectFormContextType = {
 
 const CodeConfigureProjectFormContext = createContext<CodeConfigureProjectFormContextType | undefined>(undefined);
 
-export function CodeConfigureProjectFormProvider({ 
+export function CodeConfigureProjectFormProvider({
   children,
   repos,
   selectedRepos: initialSelectedRepos,
   activeRepoId: initialActiveRepoId,
-}: { 
+}: {
   children: ReactNode,
   repos: GitHubRepo[],
   selectedRepos?: number[],
@@ -67,14 +65,13 @@ export function CodeConfigureProjectFormProvider({
   const getConfiguredRepo = useCallback((repoId: number): ConfiguredRepo | null => {
     const repo = repos.find((r) => r.id === repoId);
     if (!repo) return null;
-    
+
     const configured = configuredRepos[repoId];
     const configuredRepoId = repo.id ? repo.id.toString() : crypto.randomUUID();
-    
+
     return {
       id: configuredRepoId,
       name: repo.name,
-      type: configured?.type || "monorepo",
       branch: configured?.branch || "main",
       setupMode: configured?.setupMode || "full",
       buildConfig: configured?.buildConfig,
@@ -82,24 +79,17 @@ export function CodeConfigureProjectFormProvider({
     };
   }, [repos, configuredRepos]);
 
-  const setConfiguredRepoType = useCallback((repoId: number, type: ConfiguredRepoType) => {
-    setConfiguredRepos((prev) => ({
-      ...prev,
-      [repoId]: { ...prev[repoId], type },
-    }));
-  }, []);
-
   const setConfiguredRepoSetupMode = useCallback((repoId: number, setupMode: ConfiguredRepoSetupMode) => {
     setConfiguredRepos((prev) => {
       const current = prev[repoId] || {};
       const targetType: ConfiguredRepoBuildConfigTargetType = setupMode === "full" ? "repo" : "custom";
-      
+
       if (setupMode === "full") {
         const updatedBuildConfig = current.buildConfig ? {
           ...current.buildConfig,
           targetType,
         } : undefined;
-        
+
         return {
           ...prev,
           [repoId]: { ...current, setupMode, setupConfigs: undefined, buildConfig: updatedBuildConfig },
@@ -120,13 +110,13 @@ export function CodeConfigureProjectFormProvider({
       const targetType: ConfiguredRepoBuildConfigTargetType = setupMode === "full" ? "repo" : "custom";
       const repo = repos.find((r) => r.id === repoId);
       const targetId = repo?.id ? repo.id.toString() : crypto.randomUUID();
-      
+
       const updatedBuildConfig = buildConfig ? {
         ...buildConfig,
         targetType,
         targetId,
       } : undefined;
-      
+
       return {
         ...prev,
         [repoId]: { ...prev[repoId], buildConfig: updatedBuildConfig },
@@ -166,15 +156,14 @@ export function CodeConfigureProjectFormProvider({
       if (!repo) {
         throw new Error(`Repository with id ${repoId} not found`);
       }
-      
+
       const configured = configuredRepos[repoId] || {};
       const setupMode = configured.setupMode || "full";
       const configuredRepoId = repo.id ? repo.id.toString() : crypto.randomUUID();
-      
+
       const configuredRepo: ConfiguredRepo = {
         id: configuredRepoId,
         name: repo.name,
-        type: configured.type || "monorepo",
         branch: configured.branch || "main",
         setupMode,
       };
@@ -208,7 +197,6 @@ export function CodeConfigureProjectFormProvider({
     setActiveRepoId,
     isFormValid,
     getConfiguredRepo,
-    setConfiguredRepoType,
     setConfiguredRepoSetupMode,
     setConfiguredRepoBuildConfig,
     setConfiguredRepoCustomSetupConfigs,
@@ -218,14 +206,13 @@ export function CodeConfigureProjectFormProvider({
     setRepoBranch,
     buildConfiguredProject,
   }), [
-    name, 
-    repos, 
-    selectedRepos, 
-    selectedReposData, 
-    activeRepoId, 
-    isFormValid, 
+    name,
+    repos,
+    selectedRepos,
+    selectedReposData,
+    activeRepoId,
+    isFormValid,
     getConfiguredRepo,
-    setConfiguredRepoType,
     setConfiguredRepoSetupMode,
     setConfiguredRepoBuildConfig,
     setConfiguredRepoCustomSetupConfigs,

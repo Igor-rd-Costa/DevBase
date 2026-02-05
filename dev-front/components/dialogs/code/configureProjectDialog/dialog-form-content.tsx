@@ -46,7 +46,7 @@ export default function DialogFormContent({
 
   return (
     <>
-      <div className="flex flex-col w-[22rem]">
+      <div className="flex flex-col w-full">
         <label htmlFor="project-name" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Project Name
         </label>
@@ -55,7 +55,7 @@ export default function DialogFormContent({
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:focus:ring-zinc-400"
+          className="w-full max-w-[25rem] px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:focus:ring-zinc-400"
           placeholder="Enter project name"
         />
       </div>
@@ -80,7 +80,7 @@ export default function DialogFormContent({
           }
           return "Select repositories";
         }}
-        className="w-[22rem]"
+        className="w-full max-w-[15rem]"
         dialogTitle="Select Repositories"
         dialogWidth="max-w-xl"
       />

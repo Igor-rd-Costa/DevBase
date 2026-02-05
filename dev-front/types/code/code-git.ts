@@ -2,6 +2,7 @@ export type CodeConfiguredGitProjectInfo = {
   id: string,
   projectId: string,
   name: string,
+  updatedAt?: Date,
 }
 
 export type CodeAddConfiguredProjectData = Omit<CodeConfiguredGitProjectInfo, "id">;

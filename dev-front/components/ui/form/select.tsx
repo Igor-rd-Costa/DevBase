@@ -113,7 +113,7 @@ export default function Select<T = string>({
   return (
     <div className={`relative flex flex-col gap-2 ${className}`}>
       {label && (
-        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400 pl-1">
           {label}
         </label>
       )}

@@ -6,6 +6,7 @@ import { GitHubRepo } from "@/lib/api";
 import GitHubFileSelectionPopup from "@/components/dialogs/code/configureProjectDialog/github-file-selection-popup";
 import Select from "@/components/ui/form/select";
 import { SelectPopupOption } from "@/components/dialogs/select-popup";
+import { X, FolderOpen } from "lucide-react";
 
 type ConfiguredRepoBuildConfigFormSectionProps = {
   buildConfig: ConfiguredRepoBuildConfig | undefined,
@@ -61,18 +62,18 @@ export default function ConfiguredRepoBuildConfigFormSection({
       targetType,
       targetId,
       buildType: value,
-      buildTarget: buildConfig?.buildTarget || "",
+      target: buildConfig?.target || "",
     });
   };
 
-  const handleBuildTargetChange = (buildTarget: string | null) => {
+  const handleTargetChange = (target: string | null) => {
     const targetType = getTargetType();
     onChange({
       id: buildConfig?.id || crypto.randomUUID(),
       targetType,
       targetId,
       buildType: buildConfig?.buildType || "docker",
-      buildTarget: buildTarget || "",
+      target: target || "",
     });
   };
 
@@ -94,26 +95,41 @@ export default function ConfiguredRepoBuildConfigFormSection({
       {buildConfig && (
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Build Target
+            Target
           </label>
-          <button
-            type="button"
-            onClick={() => setIsFilePopupOpen(true)}
-            className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:focus:ring-zinc-400 flex items-center justify-between"
-          >
-            <span className="text-sm">
-              {buildConfig.buildTarget || "Select file"}
-            </span>
-          </button>
+          <div className="relative flex items-center">
+            <button
+              type="button"
+              onClick={() => setIsFilePopupOpen(true)}
+              className="w-full px-3 py-2 pr-16 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:focus:ring-zinc-400 text-left"
+            >
+              <span className="text-sm truncate block">
+                {buildConfig.target || "Select file"}
+              </span>
+            </button>
+            {buildConfig.target && (
+              <button
+                type="button"
+                onClick={() => handleTargetChange(null)}
+                className="absolute right-10 p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+                title="Clear target"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+            <div className="absolute right-3 pointer-events-none">
+              <FolderOpen className="w-4 h-4 text-zinc-400" />
+            </div>
+          </div>
         </div>
       )}
 
       {isFilePopupOpen && (
         <GitHubFileSelectionPopup
           repo={repo}
-          selectedPath={buildConfig?.buildTarget || null}
+          selectedPath={buildConfig?.target || null}
           onSelectionChange={(path) => {
-            handleBuildTargetChange(path);
+            handleTargetChange(path);
           }}
           onClose={() => setIsFilePopupOpen(false)}
           branch={branch}
@@ -123,4 +139,3 @@ export default function ConfiguredRepoBuildConfigFormSection({
     </div>
   );
 }
-

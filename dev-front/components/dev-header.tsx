@@ -1,20 +1,21 @@
 "use client";
 
-import { User, LogOut, Github } from "lucide-react";
+import { User, LogOut, Github, Terminal, Monitor } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/contexts/auth-context";
 import { getAuthUrl } from "@/lib/api";
 import { useState, useRef, useEffect } from "react";
 import CodeConfiguredGitProjectSelect from "@/components/code/git/code-configured-git-project-select";
-
+import { useView } from "@/contexts/view-context";
+import { ViewMode } from "@/types/view-mode";
 
 type DevHeaderProps = {
   className?: string;
 }
 
-
 export default function DevHeader({ className = "" }: DevHeaderProps) {
   const { user, logout, loading } = useAuth();
+  const { viewMode, setViewMode } = useView();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -57,9 +58,33 @@ export default function DevHeader({ className = "" }: DevHeaderProps) {
           </div>
         ) : user ? (
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3">
-              <CodeConfiguredGitProjectSelect />
-            </div>
+            {viewMode !== ViewMode.CONFIGURED_PROJECT && (
+              <>
+                <div className="flex bg-zinc-100 dark:bg-zinc-800/50 rounded-lg p-1 mr-2 border border-zinc-200 dark:border-zinc-800">
+                  <button
+                    onClick={() => setViewMode(ViewMode.APP)}
+                    className={`px-3 py-1 flex items-center gap-1.5 rounded-md text-sm font-medium transition-all ${viewMode === ViewMode.APP
+                      ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm"
+                      : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+                      }`}
+                  >
+                    <Monitor className="w-4 h-4" />
+                    View
+                  </button>
+                  <button
+                    onClick={() => setViewMode(ViewMode.CODE)}
+                    className={`px-3 py-1 flex items-center gap-1.5 rounded-md text-sm font-medium transition-all ${viewMode === ViewMode.CODE
+                      ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm"
+                      : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+                      }`}
+                  >
+                    <Terminal className="w-4 h-4" />
+                    Code
+                  </button>
+                </div>
+                <CodeConfiguredGitProjectSelect />
+              </>
+            )}
             <div className="relative w-8 h-8" ref={profileMenuRef}>
               <button
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}

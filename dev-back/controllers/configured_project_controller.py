@@ -19,7 +19,7 @@ class ConfiguredRepoBuildConfig(BaseModel):
     targetType: str
     targetId: str
     buildType: str
-    buildTarget: str
+    target: Optional[str] = None
 
 
 class ConfiguredRepoCustomSetupConfig(BaseModel):
@@ -32,7 +32,6 @@ class ConfiguredRepoCustomSetupConfig(BaseModel):
 class ConfiguredRepo(BaseModel):
     id: str
     name: str
-    type: str
     branch: str
     setupMode: str
     setupConfigs: Optional[List[ConfiguredRepoCustomSetupConfig]] = None

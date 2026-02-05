@@ -67,7 +67,13 @@ export async function getGitHubRepos(token: string): Promise<GitHubRepo[]> {
       return [];
     }
 
-    return response.json();
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      console.warn("Unexpected response format from getGitHubRepos:", data);
+      return [];
+    }
+    console.log(`Fetched ${data.length} GitHub repositories`);
+    return data;
   } catch (error) {
     console.error("Error fetching GitHub repositories:", error);
     return [];

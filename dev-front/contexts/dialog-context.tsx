@@ -73,31 +73,50 @@ function PopupWrapper({ target, onOpenChange, children, className = "" }: PopupW
 
     const updatePosition = () => {
       const rect = target.getBoundingClientRect();
-      const popupRect = popupRef.current?.getBoundingClientRect();
-      const popupHeight = popupRect?.height || 0;
+      const popup = popupRef.current;
+      if (!popup) return;
 
-      let top = rect.bottom + 4; // Add a small gap
+      // Reset max-height before measuring
+      popup.style.maxHeight = 'none';
+
+      const popupRect = popup.getBoundingClientRect();
+      const popupHeight = popupRect.height;
+      const popupWidth = popupRect.width;
+
+      let top = rect.bottom + 4;
       let left = rect.left;
+      let width = rect.width;
 
-      // Match width with target
-      const width = rect.width;
+      // Ensure width is at least target width but allow it to be larger if content requires it
+      const actualWidth = Math.max(width, popupWidth);
 
-      if (top + popupHeight > window.innerHeight) {
-        popupRef.current!.style.maxHeight = `${window.innerHeight - top - 8}px`;
-        if (top < 0) {
-          top = Math.max(8, window.innerHeight - popupHeight - 8);
+      // Horizontal constraints
+      if (left + actualWidth > window.innerWidth - 8) {
+        left = window.innerWidth - actualWidth - 8;
+      }
+      if (left < 8) {
+        left = 8;
+        // If it's still too wide, we'll let it be capped by CSS or adjust width
+      }
+
+      // Vertical constraints and flipping
+      const spaceBelow = window.innerHeight - rect.bottom - 8;
+      const spaceAbove = rect.top - 8;
+
+      if (top + popupHeight > window.innerHeight - 8) {
+        // Doesn't fit below. Try flipping to top if more space exists there
+        if (spaceAbove > spaceBelow && spaceAbove > 100) {
+          top = Math.max(8, rect.top - popupHeight - 4);
+          if (top === 8) {
+            popup.style.maxHeight = `${spaceAbove}px`;
+          }
+        } else {
+          // Stay below but cap height
+          popup.style.maxHeight = `${spaceBelow}px`;
         }
       }
 
-      if (left + width > window.innerWidth) {
-        left = window.innerWidth - width - 8;
-      }
-
-      if (left < 0) {
-        left = 8;
-      }
-
-      setPosition({ top, left, width });
+      setPosition({ top, left, width: actualWidth });
     };
 
     updatePosition();
@@ -152,11 +171,11 @@ function PopupWrapper({ target, onOpenChange, children, className = "" }: PopupW
 
 function DialogWrapper({ type, title, onOpenChange, children, className = "" }: DialogWrapperProps) {
   return (
-    <div 
+    <div
       className="absolute top-0 left-0 w-full h-full inset-0 z-[100] flex items-center justify-center bg-black/60 overflow-hidden"
       onClick={() => onOpenChange(false)}
     >
-      <div 
+      <div
         className={`relative z-[101] bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 ring-1 ring-zinc-900/5
         grid grid-rows-[auto_1fr_auto] h-fit max-h-[95dvh] w-fit overflow-hidden ${className}`}>
         <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 p-4 py-2">
@@ -279,7 +298,9 @@ export function DialogProvider({ children }: DialogProviderProps) {
             const handleOpenChange = (value: any) => {
               onOpenChange(value, dialog.id);
             };
-            const { className, props } = dialog.props as any;
+            const dialogData = dialog.props as any;
+            const className = dialogData?.className;
+            const props = dialogData?.props || dialogData;
 
             if (dialog.renderType === "popup") {
               if (dialog.type !== DialogType.CUSTOM) {

@@ -43,7 +43,7 @@ export default function RepoBranchSelector({
 
   const loadBranches = async () => {
     if (!token) return;
-    
+
     setLoading(true);
     setError(null);
     try {
@@ -60,8 +60,8 @@ export default function RepoBranchSelector({
 
   return (
     <Select
-      label="Branch"
-      placeholder="Select branch"
+      label="Base Branch"
+      placeholder="Select base branch"
       options={options}
       value={selectedBranch}
       onChange={(branch) => onBranchChange(branch as string)}
@@ -69,7 +69,7 @@ export default function RepoBranchSelector({
       error={error}
       emptyMessage="No branches found"
       className="w-[15rem]"
-      dialogTitle="Select Branch"
+      dialogTitle="Select Base Branch"
       dialogWidth="max-w-[15rem]"
     />
   );

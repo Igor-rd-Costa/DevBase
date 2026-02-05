@@ -21,3 +21,14 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+# Python
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+env/
+.env/
+*.egg-info/

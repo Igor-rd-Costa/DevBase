@@ -13,11 +13,11 @@ export default function ChatPanel() {
   };
 
   return (
-    <section className="w-[22rem] h-full overflow-hidden border-r border-zinc-200 dark:border-zinc-700 shadow-[1px_0_2px_1px_black] grid grid-rows-[1fr_auto] bg-zinc-100 dark:bg-zinc-900 z-[99]">
+    <section className="w-[22rem] h-full overflow-hidden border-r border-zinc-200 dark:border-zinc-700 shadow-[1px_0_2px_1px_black] grid grid-rows-[1fr_auto] bg-zinc-50/50 dark:bg-zinc-800/50 z-[99]">
       <div className="w-full h-full overflow-hidden">
         {/* Messages list will go here */}
       </div>
-      <div className="w-full min-h-[8rem] p-3 overflow-hidden bg-zinc-100 dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800">
+      <div className="w-full min-h-[8rem] p-3 overflow-hidden bg-zinc-50/50 dark:bg-zinc-800/50 border-t border-zinc-200 dark:border-zinc-800">
         <div className="relative w-full h-full bg-zinc-200 dark:bg-zinc-800 rounded-xl">
           <ChatBox ref={chatBoxRef} onSend={handleSend} placeholder="Ask anything..." />
           <button

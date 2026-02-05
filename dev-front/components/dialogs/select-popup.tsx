@@ -296,25 +296,19 @@ SelectPopupWithShow.show = <T = string>(
     let selectedValue: T | T[] | null = options.initialValue || (options.multiple ? [] : null);
     let forceUpdate: (() => void) | null = null;
 
-    const SelectDialogComponent = (props: DialogBaseProps & SelectPopupShowOptions<T>) => {
-      console.log("SelectDialogComponent RENDER - props:", props);
-      console.log("SelectDialogComponent RENDER - props.options:", props.options);
-      console.log("SelectDialogComponent RENDER - props.options length:", props.options?.length);
-      
-      const [value, setValue] = useState<T | T[] | null>(selectedValue);
+    const SelectDialogComponent = (incomingProps: DialogBaseProps & Partial<SelectPopupShowOptions<T>>) => {
+      // Merge closure options with incoming props to ensure we always have data
+      // incomingProps will contain updates from dialog.update()
+      const props = { ...options, ...incomingProps };
 
+      const [value, setValue] = useState<T | T[] | null>(selectedValue);
       useEffect(() => {
-        console.log("SelectDialogComponent useEffect - initial mount");
         forceUpdate = () => {
           setValue(selectedValue);
         };
       }, []);
 
       useEffect(() => {
-        console.log("SelectDialogComponent useEffect - props changed");
-        console.log("SelectDialogComponent props:", props);
-        console.log("SelectDialogComponent props.options:", props.options);
-        console.log("SelectDialogComponent props.options length:", props.options?.length);
       }, [props.options, props.loading, props.error]);
 
       const handleOptionClick = (optionValue: T) => {

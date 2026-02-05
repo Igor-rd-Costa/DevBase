@@ -7,9 +7,9 @@ import ConfiguredRepoCustomSetupConfigFormSection from "@/components/dialogs/cod
 import RepoBranchSelector from "@/components/dialogs/code/configureProjectDialog/repo-branch-selector";
 
 export default function CodeConfiguredRepoFormSection() {
-  const { 
-    selectedReposData, 
-    activeRepoId, 
+  const {
+    selectedReposData,
+    activeRepoId,
     getConfiguredRepo,
     setConfiguredRepoSetupMode,
     setConfiguredRepoBuildConfig,
@@ -42,26 +42,6 @@ export default function CodeConfiguredRepoFormSection() {
         selectedBranch={branch}
         onBranchChange={(newBranch) => setRepoBranch(repo.id, newBranch)}
       />
-
-      <div className="flex flex-col gap-2">
-        <label className="text-md font-medium text-zinc-900 dark:text-zinc-100">
-          Type
-        </label>
-        <div className="flex flex-col">
-          <label className="flex items-center gap-1 cursor-pointer">
-            <input
-              type="radio"
-              name={`repo-type-${repo.id}`}
-              value="monorepo"
-              checked={configuredRepo.type === "monorepo"}
-              onChange={() => {}}
-              className="w-3 h-3 text-zinc-900 dark:text-white border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-zinc-500 dark:focus:ring-zinc-400"
-              disabled
-            />
-            <span className="text-sm text-zinc-900 dark:text-zinc-200">Monorepo</span>
-          </label>
-        </div>
-      </div>
 
       <div className="flex flex-col gap-2">
         <label className="text-md font-medium text-zinc-900 dark:text-zinc-100">

@@ -43,7 +43,7 @@ export default function ConfiguredRepoCustomSetupConfigFormSection({
           targetType: "custom" as ConfiguredRepoBuildConfigTargetType,
           targetId: configId,
           buildType: "docker" as ConfiguredRepoBuildConfigBuildType,
-          buildTarget: "",
+          target: "",
         },
       };
     });
@@ -68,7 +68,7 @@ export default function ConfiguredRepoCustomSetupConfigFormSection({
           targetType: "custom" as ConfiguredRepoBuildConfigTargetType,
           targetId: configId,
           buildType: "docker" as ConfiguredRepoBuildConfigBuildType,
-          buildTarget: "",
+          target: "",
         };
         return {
           ...config,
@@ -104,45 +104,44 @@ export default function ConfiguredRepoCustomSetupConfigFormSection({
           </button>
         </div>
 
-      {configs.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-1 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg overflow-x-auto">
-                  {configs.map((config) => {
-              const isActive = activeFolderId === config.id;
-              return (
-                <button
-                  key={config.id}
-                  type="button"
-                  onClick={() => setActiveFolderId(config.id)}
-                  className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 whitespace-nowrap ${
-                    isActive
+        {configs.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-1 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-lg overflow-x-auto">
+              {configs.map((config) => {
+                const isActive = activeFolderId === config.id;
+                return (
+                  <button
+                    key={config.id}
+                    type="button"
+                    onClick={() => setActiveFolderId(config.id)}
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 whitespace-nowrap ${isActive
                       ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm"
                       : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-white/50 dark:hover:bg-zinc-800/50"
-                  }`}
-                >
-                  {config.folderPath}
-                </button>
-              );
-            })}
-          </div>
-
-          {activeFolderId && (
-            <div className="pt-4">
-              {configs.find((c) => c.id === activeFolderId) && repo && (
-                <ConfiguredRepoBuildConfigFormSection
-                  buildConfig={configs.find((c) => c.id === activeFolderId)?.buildConfig}
-                  setupMode="custom"
-                  repo={repo}
-                  branch={branch}
-                  targetId={activeFolderId}
-                  folderPath={configs.find((c) => c.id === activeFolderId)?.folderPath}
-                  onChange={(buildConfig) => handleBuildConfigChange(activeFolderId, buildConfig)}
-                />
-              )}
+                      }`}
+                  >
+                    {config.folderPath}
+                  </button>
+                );
+              })}
             </div>
-          )}
-        </div>
-      )}
+
+            {activeFolderId && (
+              <div className="pt-4">
+                {configs.find((c) => c.id === activeFolderId) && repo && (
+                  <ConfiguredRepoBuildConfigFormSection
+                    buildConfig={configs.find((c) => c.id === activeFolderId)?.buildConfig}
+                    setupMode="custom"
+                    repo={repo}
+                    branch={branch}
+                    targetId={activeFolderId}
+                    folderPath={configs.find((c) => c.id === activeFolderId)?.folderPath}
+                    onChange={(buildConfig) => handleBuildConfigChange(activeFolderId, buildConfig)}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {isPopupOpen && repo && (

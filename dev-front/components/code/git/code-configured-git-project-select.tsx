@@ -2,25 +2,24 @@
 
 import { useCode } from "@/contexts/code/code-context";
 import { useDialog, DialogType } from "@/contexts/dialog-context";
-import CodeConfigureProjectDialog from "@/components/dialogs/code/configureProjectDialog/code-configure-project-dialog";
 import ProjectDetailsDialog from "@/components/dialogs/code/project-details-dialog";
 import { CodeConfiguredGitProjectInfo } from "@/types/code";
 import { Plus, ChevronDown, Folder, Trash2, Settings } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useView } from "@/contexts/view-context";
+import { ViewMode, ConfiguredProjectMode } from "@/types/view-mode";
 
 export default function CodeConfiguredGitProjectSelect() {
   const { Git } = useCode();
   const dialog = useDialog();
+  const { setViewMode, setConfiguredProjectMode } = useView();
   const projects = Git.getConfiguredProjects();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleNewProject = async () => {
-    const result = await dialog.show<CodeConfiguredGitProjectInfo | null>(
-      DialogType.CUSTOM,
-      "Configure Project",
-      CodeConfigureProjectDialog
-    );
+  const handleNewProject = () => {
+    setConfiguredProjectMode(ConfiguredProjectMode.CREATE);
+    setViewMode(ViewMode.CONFIGURED_PROJECT);
     setIsOpen(false);
   };
 

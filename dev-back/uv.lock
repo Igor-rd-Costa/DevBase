@@ -1,12 +1,6 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.12"
-
-[manifest]
-members = [
-    "dev-back",
-    "dev-manager",
-]
 
 [[package]]
 name = "alembic"
@@ -326,27 +320,6 @@ requires-dist = [
     { name = "python-multipart", specifier = ">=0.0.12" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
     { name = "uvicorn", specifier = ">=0.32.0" },
-]
-
-[[package]]
-name = "dev-manager"
-version = "0.1.0"
-source = { virtual = "dev-manager" }
-dependencies = [
-    { name = "docker" },
-    { name = "fastapi" },
-    { name = "pydantic-settings" },
-    { name = "python-dotenv" },
-    { name = "uvicorn" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "docker", specifier = ">=7.1.0" },
-    { name = "fastapi", specifier = ">=0.128.0" },
-    { name = "pydantic-settings", specifier = ">=2.12.0" },
-    { name = "python-dotenv", specifier = ">=1.2.1" },
-    { name = "uvicorn", specifier = ">=0.40.0" },
 ]
 
 [[package]]

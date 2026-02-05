@@ -90,10 +90,6 @@ export default function ProjectDetailsDialog({ onOpenChange, projectId }: Projec
 
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
-                        <span className="text-zinc-600 dark:text-zinc-400">Type:</span>
-                        <span className="ml-2 text-zinc-900 dark:text-zinc-100">{repo.type}</span>
-                      </div>
-                      <div>
                         <span className="text-zinc-600 dark:text-zinc-400">Branch:</span>
                         <span className="ml-2 text-zinc-900 dark:text-zinc-100">{repo.branch}</span>
                       </div>
@@ -120,8 +116,8 @@ export default function ProjectDetailsDialog({ onOpenChange, projectId }: Projec
                             <span className="ml-2 text-zinc-900 dark:text-zinc-100">{repo.buildConfig.buildType}</span>
                           </div>
                           <div>
-                            <span className="text-zinc-600 dark:text-zinc-400">Build Target:</span>
-                            <span className="ml-2 text-zinc-900 dark:text-zinc-100 font-mono">{repo.buildConfig.buildTarget}</span>
+                            <span className="text-zinc-600 dark:text-zinc-400">Target:</span>
+                            <span className="ml-2 text-zinc-900 dark:text-zinc-100 font-mono">{repo.buildConfig.target}</span>
                           </div>
                         </div>
                       </div>
@@ -154,8 +150,8 @@ export default function ProjectDetailsDialog({ onOpenChange, projectId }: Projec
                                         <span className="ml-2 text-zinc-900 dark:text-zinc-100">{config.buildConfig.buildType}</span>
                                       </div>
                                       <div>
-                                        <span className="text-zinc-600 dark:text-zinc-400">Build Target:</span>
-                                        <span className="ml-2 text-zinc-900 dark:text-zinc-100 font-mono">{config.buildConfig.buildTarget}</span>
+                                        <span className="text-zinc-600 dark:text-zinc-400">Target:</span>
+                                        <span className="ml-2 text-zinc-900 dark:text-zinc-100 font-mono">{config.buildConfig.target}</span>
                                       </div>
                                     </div>
                                   </div>
